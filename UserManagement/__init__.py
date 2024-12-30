@@ -29,31 +29,39 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
     
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    
+    from UserManagement.routes import main_bp
+    app.register_blueprint(main_bp)
+    
+    @app.before_request
+    def check_token_expiry():
+        try:
+            verify_jwt_identity()
+        except Exception as e :
+            if "Token Has Expired" in str(e):
+                return jsonify({'error': 'Token expired, please refresh'}), 401
+
+    return app
+    
 #db.init_app(app): Binds the SQLAlchemy instance to the Flask app, enabling database interactions.
 #migrate.init_app(app, db): Binds the Migrate instance to both the app and the database, enabling database migration commands such as flask db migrate.
 #jwt.init_app(app): Binds the JWTManager instance to the app, enabling JWT-based authentication functionalities.
 #By calling init_app, extensions are configured for use with the app instance.
 
-db.init_app(app)
-migrate.init_app(app, db)
-jwt.init_app(app)
+
 
 #from app.routes import main_bp: Imports a blueprint named main_bp from the app.routes module.
 #app.register_blueprint(main_bp): Registers the blueprint with the Flask application.
 #Blueprints: A way to organize application routes, models, and other logic into smaller, modular components. This promotes a cleaner and more maintainable codebase.
 
-from app.routes import main_bp
-    app.register_blueprint(main_bp)
 
 
-@app.before_request
-def check_token_expiry():
-    try:
-        verify_jwt_identity()
-    except Exception as e :
-        if "Token Has Expired" in str(e):
-            return jsonify({'error': 'Token expired, please refresh'}), 401
-    
-    return None
+
+
+
+
 
     

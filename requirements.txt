@@ -1,0 +1,12 @@
+Flask
+setuptools
+pytest
+SQLAlchemy
+psycopg2
+pyjwt
+#pykafka
+requests
+dotenv
+flask-jwt-extended
+flask-migrate
+werkzeug
