@@ -3,11 +3,12 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from UserManagement.models import db, User, Roles
 from datetime import timedelta
 
-main_bp = Blueprint("main", __name__)
+main_bp = Blueprint("main", __name__, url_prefix='/api')
 
 @main_bp.route('/users/register', methods = ['POST'] )
 def register_user():
     data = request.json
+    console.log(data)
     if User.query.filter_by(email = data['email']).first():
         return jsonify({'error' : 'User already exists'}),400
     user = User(email = data['email'],name = data['name'],role = data['role'])

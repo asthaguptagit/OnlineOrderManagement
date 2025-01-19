@@ -8,6 +8,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager,verify_jwt_in_request
+from flask_cors import CORS
 
 
 #db = SQLAlchemy(): Creates a SQLAlchemy object for database interaction.
@@ -27,6 +28,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object('config.Config')
     
     db.init_app(app)
